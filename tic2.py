@@ -85,6 +85,38 @@ def danger(field,agressor):
 				if field[i2][i] == ' ':
 					result[i2][i] = ownChar
 					return result
+	dia1 = [field[0][0],field[1][1],field[2][2]]
+	dia2 = [field[0][2],field[1][1],field[2][0]]
+	agCounter = 0
+	for i in range(3):
+		if dia1[i] == agressor:
+			agCounter += 1
+	if agCounter == 2:
+		if dia1[0] == ' ':
+			result[0][0] = ownChar
+			return result
+		elif dia1[1] == ' ':
+			result[1][1] = ownChar
+			return result
+		elif dia1[2] == ' ':
+			result[2][2] = ownChar
+			return result
+
+	agCounter = 0
+	for i in range(3):
+		if dia2[i] == agressor:
+			agCounter += 1
+	if agCounter == 2:
+		if dia2[0] == ' ':
+			result[0][2] = ownChar
+			return result
+		elif dia2[1] == ' ':
+			result[1][1] = ownChar
+			return result
+		elif dia2[2] == ' ':
+			result[2][0] = ownChar
+			return result
+	
 	return []
 
 def KI1_Turn(field):
@@ -343,7 +375,7 @@ while answer != 'q':
 		win = Winner(field)
 		if win == player1Name:
 			break
-		os.system('clear')
+		#os.system('clear')
 		
 		turn += 1
 		print 'Turn: ' + str(turn)
@@ -357,7 +389,7 @@ while answer != 'q':
 		win = Winner(field)
 		if win == player2Name:
 			break
-		os.system('clear')
+		#os.system('clear')
 	
 	printField(field)
 	print 'The winner is: ' + win
