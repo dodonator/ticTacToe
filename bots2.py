@@ -188,7 +188,7 @@ computer2Score = 0
 com1Wins = 0
 com2Wins = 0
 counter = 0
-number = 1000
+number = 100000
 
 while counter != number:
 	#print counter
