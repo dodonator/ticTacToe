@@ -266,6 +266,7 @@ def KI3_Turn(field):
 		elif dia1[2] == ' ':
 			result[2][2] = 'O'
 			return result
+
 	if 'O' in dia2 and 'X' not in dia2:
 		if dia2[0] == ' ':
 			result[0][2] = 'O'
@@ -280,15 +281,18 @@ def KI3_Turn(field):
 	row = random.randint(0,2)
 	column = random.randint(0,2)
 	result[row][column] = 'O'
+
 	return result
 
 def USER_Turn(field):
 	fieldStatus = isFieldFull(field)
 	if fieldStatus == True:
 		return field
+
 	result = field
 	running = True
 	print "User it's your turn"
+
 	while running == True:
 		row = int(raw_input('Which row? '))
 		column = int(raw_input('Which column? '))
@@ -297,6 +301,7 @@ def USER_Turn(field):
 			running = False
 		else:
 			print 'This place is occupied!'
+
 	return result
 
 def Winner(field):
@@ -340,9 +345,11 @@ def Winner(field):
 		return winner
 	else:
 		winner = ''
+
 	fieldStatus = isFieldFull(field)
 	if fieldStatus == True:
 		return "Nobody"
+
 	return winner
 
 # Time to play!
@@ -386,6 +393,7 @@ while answer != 'q':
 			field = KI2_Turn(field)
 		elif enemy == '2':
 			field = KI3_Turn(field)
+
 		win = Winner(field)
 		if win == player2Name:
 			break
@@ -397,6 +405,7 @@ while answer != 'q':
 		player1Score += (10-turn)
 	elif win == player2Name:
 		player2Score += (10-turn)
+
 print player1Name + ': ' + str(player1Score)
 print player2Name + ': ' + str(player2Score)
 
