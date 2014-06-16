@@ -1,0 +1,16 @@
+The random KI
+The ranom KI simply plays after the python random library
+
+The easy KI
+The simple AI observed in which row it has a character and
+the opponent does not. It will only set in rows, where not
+providing any opponent's piece.
+
+The medium KI
+The medium AI does the same as the simple AI, except that
+she additionally the opponent blocks, if these two have in
+a row.
+
+The heavy KI
+Theoretically, the only way to defeat the heavy AI is to set
+a trap, so it is possible to win in two fields.

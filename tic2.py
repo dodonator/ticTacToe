@@ -17,9 +17,17 @@ print '0 : random KI'
 print '1 : easy KI'
 print '2 : medium KI'
 print '3 : heavy KI'
+print 'i : information about the KIs'
 print 'q : quit' 
 enemy = raw_input('Choose your enemy: ')
 if enemy == 'q' or enemy == 'Q':
+	sys.exit()
+elif enemy == 'i' or enemy == 'I':
+	file1 = open('infoBots.txt','r')
+	content = file1.read()
+	file1.close()
+	os.system('clear')
+	print content
 	sys.exit()
 
 for i in range(3):
