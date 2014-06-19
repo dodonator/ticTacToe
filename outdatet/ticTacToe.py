@@ -29,30 +29,14 @@ def isFieldFull(field):
 	if occupiedPlaces == 9:
 		return True
 
-def KI1_Turn(field):
-	fieldStatus = isFieldFull(field)
-	if fieldStatus == True:
-		return field
-	result = field
-	running = True
-	# print "It is the turn of the computer1."
-	while running == True:
-		row = random.randint(0,2)
-		column = random.randint(0,2)
-		if field[row][column] == ' ':
-			result[row][column] = 'X'
-			running = False
-		else:
-			pass
-	return result
 
-def KI2_Turn(field):
+def KI_Turn(field):
 	fieldStatus = isFieldFull(field)
 	if fieldStatus == True:
 		return field
 	result = field
 	running = True
-	# print "It is the turn of the computer2."
+	"It is the turn of the computer."
 	while running == True:
 		row = random.randint(0,2)
 		column = random.randint(0,2)
@@ -69,7 +53,7 @@ def USER_Turn(field):
 		return field
 	result = field
 	running = True
-	# print "User it's your turn"
+	print "User it's your turn"
 	while running == True:
 		row = int(raw_input('Which row? '))
 		column = int(raw_input('Which column? '))
@@ -77,8 +61,7 @@ def USER_Turn(field):
 			result[row][column] = 'X'
 			running = False
 		else:
-			pass
-			# print 'This place is occupied!'
+			print 'This place is occupied!'
 	return result
 
 def Winner(field):
@@ -87,10 +70,10 @@ def Winner(field):
 
 	for row in field:
 		if row == ['X','X','X']:
-			winner = 'Computer1'
+			winner = 'User'
 			return winner
 		elif row == ['O','O','O']:
-			winner = 'Computer2'
+			winner = 'Computer'
 			return winner
 		else:
 			winner = ''
@@ -103,10 +86,10 @@ def Winner(field):
 	
 	for col in columns:
 		if col == ['X','X','X']:
-			winner = 'Computer1'
+			winner = 'User'
 			return winner
 		elif col == ['O','O','O']:
-			winner = 'Computer2'
+			winner = 'Computer'
 			return winner
 		else:
 			winner = ''
@@ -115,10 +98,10 @@ def Winner(field):
 	dia2 = [field[0][2],field[1][1],field[2][0]]
 
 	if dia1 == ['X','X','X'] or dia2 == ['X','X','X']:
-		winner = 'Computer1'
+		winner = 'User'
 		return winner
 	elif dia1 == ['O','O','O'] or dia2 == ['O','O','O']:
-		winner = 'Computer2'
+		winner = 'Computer'
 		return winner
 	else:
 		winner = ''
@@ -129,16 +112,18 @@ def Winner(field):
 
 # Time to play!
 
-computer1Score = 0
-computer2Score = 0
-counter = 0
+userScore = 0
+computerScore = 0
+answer = ''
 
-while counter != 100000:
-	print counter
-	# print 'Computer1: ' + str(computer1Score)
-	# print 'Computer2: ' + str(computer2Score)
-	# x = raw_input('Press Enter to continue!')
-	# os.system('clear')
+while answer != 'q':
+	print 'User: ' + str(userScore)
+	print 'Computer: ' + str(computerScore)
+	print 'Press q to exit or anything else to continue'
+	answer = raw_input(': ')
+	if answer == 'q':
+		break
+	os.system('clear')
 	
 	field = createNewField()
 	win = Winner(field)
@@ -146,28 +131,33 @@ while counter != 100000:
 	
 	while win == '':
 		if win == 'Nobody':
-			# print 'There is no winner.'
+			print 'There is no winner.'
 			break
 		
 		turn += 1
-		# print 'Turn: ' + str(turn)
-		# printField(field)
-		field = KI1_Turn(field)
+		print 'Turn: ' + str(turn)
+		printField(field)
+		field = USER_Turn(field)
 		win = Winner(field)
-		# os.system('clear')
+		if win == 'User':
+			break
+		os.system('clear')
 		
 		turn += 1
-		# print 'Turn: ' + str(turn)
-		# printField(field)
-		field = KI2_Turn(field)
+		print 'Turn: ' + str(turn)
+		printField(field)
+		field = KI_Turn(field)
 		win = Winner(field)
-		# os.system('clear')
+		if win == 'Computer':
+			break
+		os.system('clear')
 	
-	# print 'The winner is: ' + win
-	if win == 'Computer1':
-		computer1Score += (10-turn)
-	elif win == 'Computer2':
-		computer2Score += (10-turn)
-	counter += 1
-print "Computer1: " + str(computer1Score)
-print "Computer2: " + str(computer2Score)
+	printField(field)
+	print 'The winner is: ' + win
+	if win == 'User':
+		userScore += (10-turn)
+	elif win == 'Computer':
+		computerScore += (10-turn)
+
+print "User: " + str(userScore)
+print "Computer: " + str(computerScore)

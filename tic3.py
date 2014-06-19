@@ -4,35 +4,12 @@ import sys
 
 # TicTacToe
 
-player1Name = "User"
-player2Name = "KI"
-player1Char = 'X'
-player2Char = 'O'
 player1Streak = []
 player2Streak = []
 player1Score = 0
 player2Score = 0
-
-print '0 : random KI'
-print '1 : easy KI'
-print '2 : medium KI'
-print '3 : heavy KI'
-print 'i : information about the KIs'
-print 'q : quit' 
-enemy = raw_input('Choose your enemy: ')
-if enemy == 'q' or enemy == 'Q':
-	sys.exit()
-elif enemy == 'i' or enemy == 'I':
-	file1 = open('infoBots.txt','r')
-	content = file1.read()
-	file1.close()
-	os.system('clear')
-	print content
-	sys.exit()
-
-for i in range(3):
-	player1Streak.append(player1Char)
-	player2Streak.append(player2Char)
+player1Wins = 0
+player2Wins = 0
 
 def createNewField():
 	result = []
@@ -190,7 +167,7 @@ def victory(field,ownChar):
 			return result
 	return []
 
-def KI1_Turn(field):
+def randomAI(field,ownChar):
 	fieldStatus = isFieldFull(field)
 	if fieldStatus == True:
 		return field
@@ -201,29 +178,32 @@ def KI1_Turn(field):
 		row = random.randint(0,2)
 		column = random.randint(0,2)
 		if field[row][column] == ' ':
-			result[row][column] = 'O'
+			result[row][column] = ownChar
 			running = False
 		else:
 			pass
 	return result
 
-def KI2_Turn(field):
+def easyAI(field,ownChar):
 	fieldStatus = isFieldFull(field)
 	if fieldStatus == True:
 		return field
-
+	if ownChar == 'X':
+		enemyChar = 'O'
+	elif ownChar == 'O':
+		enemyChar = 'X'
 	result = field
-	print "It is the turn of the AI."
+	print "It is the turn of the easy AI."
 	for i in range(3):
-		if 'O' in field[i] and 'X' not in field[i]:
+		if ownChar in field[i] and enemyChar not in field[i]:
 			if field[i][0] == ' ':
-				result[i][0] = 'O'
+				result[i][0] = ownChar
 				return result
 			elif field[i][1] == ' ':
-				field[i][1] = 'O'
+				field[i][1] = ownChar
 				return result
 			elif result[i][2] == ' ':
-				result[i][2] = 'O'
+				result[i][2] = ownChar
 				return result
 
 	columns = [[],[],[]]
@@ -234,58 +214,61 @@ def KI2_Turn(field):
 	
 	for i in range(3):
 		col = columns[i]
-		if 'O' in col and 'X' not in col:
+		if ownChar in col and enemyChar not in col:
 			if field[0][i] == ' ':
-				result[0][i] = 'O'
+				result[0][i] = ownChar
 				return result
 			elif field[1][i] == ' ':
-				result[1][i] = 'O'
+				result[1][i] = ownChar
 				return result
-			elif field[2][i] == 'O':
-				result[2][i] = 'O'
+			elif field[2][i] == ' ':
+				result[2][i] = ownChar
 				return result
 
 	dia1 = [field[0][0],field[1][1],field[2][2]]
 	dia2 = [field[0][2],field[1][1],field[2][0]]
 
-	if 'O' in dia1 and 'X' not in dia1:
+	if ownChar in dia1 and enemyChar not in dia1:
 		if dia1[0] == ' ':
-			result[0][0] = 'O'
+			result[0][0] = ownChar
 			return result
 		elif dia1[1] == ' ':
-			field[1][1] = 'O'
+			field[1][1] = ownChar
 			return result
 		elif dia1[2] == ' ':
-			result[2][2] = 'O'
+			result[2][2] = ownChar
 			return result
-	if 'O' in dia2 and 'X' not in dia2:
+	if ownChar in dia2 and enemyChar not in dia2:
 		if dia2[0] == ' ':
-			result[0][2] = 'O'
+			result[0][2] = ownChar
 			return result
 		elif dia2[1] == ' ':
-			field[1][1] = 'O'
+			field[1][1] = ownChar
 			return result
 		elif dia2[2] == ' ':
-			result[2][0] = 'O'
+			result[2][0] = ownChar
 			return result
 
 	row = random.randint(0,2)
 	column = random.randint(0,2)
-	result[row][column] = 'O'
+	result[row][column] = ownChar
 	return result
 
-def KI3_Turn(field):
+def mediumAI(field,ownChar):
 	# are there any empty places?
 	fieldStatus = isFieldFull(field)
 	if fieldStatus == True:
 		return field
-
+	if ownChar == 'X':
+		enemyChar = 'O'
+	elif ownChar == 'O':
+		enemyChar = 'X'
 	result = field
 	print "It is the turn of the AI2.0."
 	
 	# Am I at risk?
 
-	dan = danger(field,'X')
+	dan = danger(field,enemyChar)
 	if dan == []:
 		pass
 	else:
@@ -294,15 +277,15 @@ def KI3_Turn(field):
 	# Which field has in itself?
 
 	for i in range(3):
-		if 'O' in field[i] and 'X' not in field[i]:
+		if ownChar in field[i] and enemyChar not in field[i]:
 			if field[i][0] == ' ':
-				result[i][0] = 'O'
+				result[i][0] = ownChar
 				return result
 			elif field[i][1] == ' ':
-				field[i][1] = 'O'
+				field[i][1] = ownChar
 				return result
 			elif result[i][2] == ' ':
-				result[i][2] = 'O'
+				result[i][2] = ownChar
 				return result
 
 	columns = [[],[],[]]
@@ -313,66 +296,69 @@ def KI3_Turn(field):
 	
 	for i in range(3):
 		col = columns[i]
-		if 'O' in col and 'X' not in col:
+		if ownChar in col and enemyChar not in col:
 			if field[0][i] == ' ':
-				result[0][i] = 'O'
+				result[0][i] = ownChar
 				return result
 			elif field[1][i] == ' ':
-				result[1][i] = 'O'
+				result[1][i] = ownChar
 				return result
-			elif field[2][i] == 'O':
-				result[2][i] = 'O'
+			elif field[2][i] == ownChar:
+				result[2][i] = ownChar
 				return result
 
 	dia1 = [field[0][0],field[1][1],field[2][2]]
 	dia2 = [field[0][2],field[1][1],field[2][0]]
 
-	if 'O' in dia1 and 'X' not in dia1:
+	if ownChar in dia1 and enemyChar not in dia1:
 		if dia1[0] == ' ':
-			result[0][0] = 'O'
+			result[0][0] = ownChar
 			return result
 		elif dia1[1] == ' ':
-			field[1][1] = 'O'
+			field[1][1] = ownChar
 			return result
 		elif dia1[2] == ' ':
-			result[2][2] = 'O'
+			result[2][2] = ownChar
 			return result
 
-	if 'O' in dia2 and 'X' not in dia2:
+	if ownChar in dia2 and enemyChar not in dia2:
 		if dia2[0] == ' ':
-			result[0][2] = 'O'
+			result[0][2] = ownChar
 			return result
 		elif dia2[1] == ' ':
-			field[1][1] = 'O'
+			field[1][1] = ownChar
 			return result
 		elif dia2[2] == ' ':
-			result[2][0] = 'O'
+			result[2][0] = ownChar
 			return result
 
 	row = random.randint(0,2)
 	column = random.randint(0,2)
-	result[row][column] = 'O'
+	result[row][column] = ownChar
 
 	return result
 
-def KI4_Turn(field):
+def heavyAI(field,ownChar):
 	# are there any empty places?
 	fieldStatus = isFieldFull(field)
 	if fieldStatus == True:
 		return field
-
+	if ownChar == 'X':
+		enemyChar = 'O'
+	elif ownChar == 'O':
+		enemyChar = 'X'
 	result = field
 	print "It is the turn of the AI2.0."
 
 	# Can i win?
 
-	vic = victory(field,'O')
+	vic = victory(field,ownChar)
 	if vic != []:
 		return vic
 	
 	# Am I at risk?
 
-	dan = danger(field,'X')
+	dan = danger(field,enemyChar)
 	if dan == []:
 		pass
 	else:
@@ -381,15 +367,15 @@ def KI4_Turn(field):
 	# Which field has in itself?
 
 	for i in range(3):
-		if 'O' in field[i] and 'X' not in field[i]:
+		if ownChar in field[i] and enemyChar not in field[i]:
 			if field[i][0] == ' ':
-				result[i][0] = 'O'
+				result[i][0] = ownChar
 				return result
 			elif field[i][1] == ' ':
-				field[i][1] = 'O'
+				field[i][1] = ownChar
 				return result
 			elif result[i][2] == ' ':
-				result[i][2] = 'O'
+				result[i][2] = ownChar
 				return result
 
 	columns = [[],[],[]]
@@ -400,49 +386,49 @@ def KI4_Turn(field):
 	
 	for i in range(3):
 		col = columns[i]
-		if 'O' in col and 'X' not in col:
+		if ownChar in col and enemyChar not in col:
 			if field[0][i] == ' ':
-				result[0][i] = 'O'
+				result[0][i] = ownChar
 				return result
 			elif field[1][i] == ' ':
-				result[1][i] = 'O'
+				result[1][i] = ownChar
 				return result
-			elif field[2][i] == 'O':
-				result[2][i] = 'O'
+			elif field[2][i] == ownChar:
+				result[2][i] = ownChar
 				return result
 
 	dia1 = [field[0][0],field[1][1],field[2][2]]
 	dia2 = [field[0][2],field[1][1],field[2][0]]
 
-	if 'O' in dia1 and 'X' not in dia1:
+	if ownChar in dia1 and enemyChar not in dia1:
 		if dia1[0] == ' ':
-			result[0][0] = 'O'
+			result[0][0] = ownChar
 			return result
 		elif dia1[1] == ' ':
-			field[1][1] = 'O'
+			field[1][1] = ownChar
 			return result
 		elif dia1[2] == ' ':
-			result[2][2] = 'O'
+			result[2][2] = ownChar
 			return result
 
-	if 'O' in dia2 and 'X' not in dia2:
+	if ownChar in dia2 and enemyChar not in dia2:
 		if dia2[0] == ' ':
-			result[0][2] = 'O'
+			result[0][2] = ownChar
 			return result
 		elif dia2[1] == ' ':
-			field[1][1] = 'O'
+			field[1][1] = ownChar
 			return result
 		elif dia2[2] == ' ':
-			result[2][0] = 'O'
+			result[2][0] = ownChar
 			return result
 
 	row = random.randint(0,2)
 	column = random.randint(0,2)
-	result[row][column] = 'O'
+	result[row][column] = ownChar
 
 	return result
 
-def USER_Turn(field):
+def user(field,ownChar):
 	fieldStatus = isFieldFull(field)
 	if fieldStatus == True:
 		return field
@@ -455,7 +441,7 @@ def USER_Turn(field):
 		row = int(raw_input('Which row? '))
 		column = int(raw_input('Which column? '))
 		if field[row][column] == ' ':
-			result[row][column] = 'X'
+			result[row][column] = ownChar
 			running = False
 		else:
 			print 'This place is occupied!'
@@ -510,15 +496,77 @@ def Winner(field):
 
 	return winner
 
+# Preparation
+
+os.system('clear')
+player1Name = raw_input('Please enter your name: \n')
+if len(player1Name) == 0:
+	raise Exception('Error 504: Empty Name')
+player2Name = 'AI'
+
+player1Char = raw_input('Which char do you want to play (X/O)? ')
+if player1Char == 'X':
+	player2Char = 'O'
+elif player1Char == 'O':
+	player2Char = 'X'
+else:
+	raise Exception('Error 513: Wrong Char')
+
+firstPlayer = user
+firstPlayerChar = player1Char
+secondPlayerChar = player2Char
+
+
+os.system('clear')
+print '0 : random KI'
+print '1 : easy KI'
+print '2 : medium KI'
+print '3 : heavy KI'
+print 'i : information about the KIs'
+print 'q : quit' 
+enemy = raw_input('Choose your enemy: ')
+if enemy == 'q' or enemy == 'Q':
+	sys.exit()
+elif enemy == 'i' or enemy == 'I':
+	file1 = open('infoBots.txt','r')
+	content = file1.read()
+	file1.close()
+	os.system('clear')
+	print content
+	sys.exit()
+elif enemy == '0':
+	secondPlayer = randomAI
+elif enemy == '1':
+	secondPlayer = easyAI
+elif enemy == '2':
+	secondPlayer = mediumAI
+elif enemy == '3':
+	secondPlayer = heavyAI
+os.system('clear')
+yn = raw_input('Do you want to start? (Y/N): ')
+if yn == 'Y':
+	firstPlayer = user
+elif yn == 'N':
+	tmp = firstPlayer
+	firstPlayer = secondPlayer
+	secondPlayer = tmp
+os.system('clear')
+for i in range(3):
+	player1Streak.append(player1Char)
+	player2Streak.append(player2Char)
+
 # Time to play!
 
 
 answer = ''
-
-while answer != 'q':
-	print player1Name + ': ' + str(player1Score)
-	print player2Name + ': ' + str(player2Score)
-	print 'Press q to exit or anything else to continue'
+while answer != 'q' and answer != 'Q':
+	print player1Name + ' Wins: ' + str(player1Wins)
+	print player1Name + ' Score: ' + str(player1Score)
+	print ''
+	print player2Name + ' Wins: ' + str(player2Wins)
+	print player2Name + ' Score: ' + str(player2Score)
+	print ''
+	print 'Press q to exit or anything else to continue:'
 	answer = raw_input(': ')
 	if answer == 'q':
 		break
@@ -532,39 +580,34 @@ while answer != 'q':
 		if win == 'Nobody':
 			print 'There is no winner.'
 			break
-		
 		turn += 1
 		print 'Turn: ' + str(turn)
 		printField(field)
-		field = USER_Turn(field)
+		firstPlayer(field,firstPlayerChar)
 		win = Winner(field)
-		if win == player1Name:
+		if win != '':
 			break
-		#os.system('clear')
-		
 		turn += 1
 		print 'Turn: ' + str(turn)
 		printField(field)
-		if enemy == '0':
-			field = KI1_Turn(field)
-		elif enemy == '1':
-			field = KI2_Turn(field)
-		elif enemy == '2':
-			field = KI3_Turn(field)
-		elif enemy == '3':
-			field = KI4_Turn(field)
-
+		secondPlayer(field,secondPlayerChar)
 		win = Winner(field)
-		if win == player2Name:
+		if win != '':
 			break
-		#os.system('clear')
-	
-	printField(field)
-	print 'The winner is: ' + win
+	print 'The winner is: ' + str(win)	
 	if win == player1Name:
-		player1Score += (10-turn)
+		player1Wins += 1
+		player1Score += 10-turn
 	elif win == player2Name:
-		player2Score += (10-turn)
+		player2Wins += 1
+		player1Score += 10-turn
+	# Now change the starter!	
+	tmp = firstPlayer
+	tmp2 = firstPlayerChar
+	firstPlayer = secondPlayer
+	firstPlayerChar = secondPlayerChar
+	secondPlayer = tmp
+	secondPlayerChar = tmp2
+	
 
-print player1Name + ': ' + str(player1Score)
-print player2Name + ': ' + str(player2Score)
+
