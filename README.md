@@ -9,4 +9,6 @@ TODO:
 * all code must be much easier
 * a developer version for easy debugging
 * a decent documentation in the code and outside the code
-* a merger of the two parts bots.py and tic2.py
+* a merger of the two parts bots.py and tic4.py
+* OOP
+* highscore system
