@@ -58,6 +58,8 @@ def printField2(field,size):
 def getDIA(field,size):
 	dia1 = []
 	dia2 = []
+	printField(field)
+	print 'size: ' + str(size)
 	for i in range(size):
 		dia1.append(field[i][i])
 		dia2.append(field[i][size-(i+1)])
@@ -72,7 +74,7 @@ def getCOL(field,size):
 	for row in field:
 		for i in range(size):
 			columns[i].append(row[i])
-	return columns	
+	return columns
 
 
 def getFieldStatus(field,size):
@@ -446,12 +448,11 @@ def game(function1,function2,size,score1,score2):
 			return [score1+1,score2]		
 		elif field == player2[1]:
 			return [score1,score2+1]
-		print 10 *'#'
 
 
 function1 = user
 function2 = AI
-size = 3
+size = 5
 
 
 counter = 0
