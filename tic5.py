@@ -57,12 +57,11 @@ def printField2(field,size):
 
 def getDIA(field,size):
 	dia1 = []
-	dia2 = []	
+	dia2 = []
 	for i in range(size):
 		dia1.append(field[i][i])
-	for i in range(size):
 		dia2.append(field[i][size-(i+1)])
-	result = [dia1,dia2]	
+	result = [dia1,dia2]
 	return result
 
 
@@ -142,7 +141,7 @@ def danger(field,size,ownChar):
 def victory(field,size,ownChar):
 	fullLine = []
 	for i in range(size):
-		full.append(ownChar)	
+		fullLine.append(ownChar)	
 	result = field
 
 	charCounter = 0	
@@ -230,13 +229,14 @@ def Winner(field,size,player1Char,player2Char):
 	else:
 		winner = ''
 
-	fieldStatus = isFieldFull(field)
-	if fieldStatus == True:
+	fieldStatus = getFieldStatus(field,size)
+	if fieldStatus == 9:
 		return "Nobody"
 	return winner
 
 
 def AI_phase0(field,size,ownChar):
+	result = field	
 	if ownChar == 'X':
 		enemyChar = 'O'
 	elif ownChar == 'O':
@@ -264,7 +264,7 @@ def AI_phase3(field,size,ownChar):
 		enemyChar = 'O'
 	elif ownChar == 'O':
 		enemyChar = 'X'
-	field = result	
+	result = field
 	for r in range(size):
 		if ownChar in field[r] and enemyChar not in field[r]:
 			for c in range(size):
@@ -273,7 +273,7 @@ def AI_phase3(field,size,ownChar):
 					return result
 	columns = getCOL(field,size)
 	for c in range(size):
-		if ownChar in c columns[c] and enemyChar not in columns[c]:
+		if ownChar in columns[c] and enemyChar not in columns[c]:
 			for r in range(size):
 				if field[r][c] == ' ':
 					result[r][c] = ownChar
@@ -321,15 +321,16 @@ def user(field,size,ownChar):
 	result = field
 	while True:
 		printField(field)
-		row = raw_input('Which row (0-'+str(size-1)+'): ')
-		column = raw_input('Which column (0-'+str(size-1)+'): ')
+		row = int(raw_input('Which row (0-'+str(size-1)+'): '))
+		column = int(raw_input('Which column (0-'+str(size-1)+'): '))
 		if field[row][column] == ' ':
 			result[row][column] = ownChar
+			return result
 		else:
 			os.system('clear')
 
 
-# I hope you enjoy my cheater functions
+# I hope you enjoy my cheat functions
 
 
 def cheater_shuffle(field,size,ownChar):
@@ -417,7 +418,7 @@ def Round(field,size,player1,player2):
 	
 	field = player1Function(field,size,player1Char)
 	printField(field)
-	victor = winner(field,size,player1Char,player2Char)
+	victor = Winner(field,size,player1Char,player2Char)
 	if victor == player1Char:
 		return player1Name
 	elif victor == player2Char:
@@ -427,10 +428,38 @@ def Round(field,size,player1,player2):
 
 	field = player2Function(field,size,player2Char)
 	printField(field)
-	victor = winner(field,size,player1Char,player2Char)
+	victor = Winner(field,size,player1Char,player2Char)
 	if victor == player1Char:
 		return player1Name
 	elif victor == player2Char:
 		return player2Name
 	else:
 		return field
+
+def game(function1,function2,size,score1,score2):
+	field = createNewField(size)
+	player1 = setPlayer(function1)
+	player2 = setPlayer(function2)
+	while field != player1[1] and field != player2[1]:
+		field = Round(field,size,player1,player2)
+		if field == player1[1]:
+			return [score1+1,score2]		
+		elif field == player2[1]:
+			return [score1,score2+1]
+		print 10 *'#'
+
+
+function1 = user
+function2 = AI
+size = 3
+
+
+counter = 0
+score1 = 0
+score2 = 0
+while counter != 100:
+	result = game(function1,function2,size,score1,score2)
+	score1 = result[0]
+	score2 = result[1]
+print "Player 1: " + str(score1)
+print "Player 2: " + str(score2)
