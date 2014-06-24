@@ -12,6 +12,15 @@ import sys
 # nicer input
 
 
+def setPlayer(function):
+	result = []
+	playerFunction = function
+	playerName = raw_input('Please input the name of the player: ')
+	playerChar = raw_input('Please input the char of the player: ')
+	result = [playerFunction,playerName,playerChar]
+	return result
+
+
 def createNewField(size):
 	result = []	
 	for i in range(size):
@@ -320,7 +329,28 @@ def user(field,size,ownChar):
 			os.system('clear')
 
 
+# I hope you enjoy my cheater functions
+
+
 def cheater_shuffle(field,size,ownChar):
+	result = field
+	if ownChar == 'X':
+		enemyChar = 'O'
+	elif ownChar == 'O':
+		enemyChar = 'X'
+	occupiedPlaces = 1 # Because of this 1 the function add one figure
+	for r in range(size):
+		for c in range(size):
+			if field[r][c] != ' ':
+				occupiedPlaces += 1
+	for i in range(occupiedPlaces):
+		r = random.randint(0,size-1)
+		c = random.randint(0,size-1)
+		result[r][c] = random.choice([ownChar,enemyChar])
+	return result
+
+
+def cheater_shuffle_na(field,size,ownChar): # na means that this function don't add a figure
 	result = field
 	if ownChar == 'X':
 		enemyChar = 'O'
@@ -338,7 +368,7 @@ def cheater_shuffle(field,size,ownChar):
 	return result
 
 
-def cheater_invert(field,size,ownChar):
+def cheater_invert_na(field,size,ownChar): # na means that this function don't add a figure
 	result = field
 	if ownChar == 'X':
 		enemyChar = 'O'
@@ -350,6 +380,24 @@ def cheater_invert(field,size,ownChar):
 				result[r][c] = enemyChar
 			elif field[r][c] == enemyChar:
 				result[r][c] = ownChar
+	return result
+
+
+def cheater_swap_na(field,size,ownChar): # na means that this function don't add a figure
+	result = field
+	r1 = random.randint(0,size-1)
+	c1 = random.randint(0,size-1)
+	r2 = random.randint(0,size-1)
+	c2 = random.randint(0,size-1)
+	result[r1][c1] = field[r2][c2]
+	result[r2][c2] = field[r1][c1]
+	return result
+
+
+def cheater_AI(field,size,ownChar):
+	result = field
+	result = cheater_invert_na(result,size,ownChar)
+	result = AI(result,size,ownChar)
 	return result
 
 
