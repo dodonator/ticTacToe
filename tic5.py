@@ -1,4 +1,5 @@
 # Warning: Just in developing
+# Theoretical this version supports all sizes of fields with the condition that size%2 = 1
 import random
 import os
 import sys
