@@ -12,6 +12,11 @@ import sys
 # nicer input
 
 
+def dbg(toPrint):
+	print repr(toPrint)
+	return
+
+
 def setPlayer(function):
 	result = []
 	playerFunction = function
@@ -58,8 +63,6 @@ def printField2(field,size):
 def getDIA(field,size):
 	dia1 = []
 	dia2 = []
-	printField(field)
-	print 'size: ' + str(size)
 	for i in range(size):
 		dia1.append(field[i][i])
 		dia2.append(field[i][size-(i+1)])
@@ -218,7 +221,6 @@ def Winner(field,size,player1Char,player2Char):
 			return winner
 		else:
 			winner = ''
-
 	dia1 = getDIA(field,size)[0]
 	dia2 = getDIA(field,size)[1]
 
@@ -243,6 +245,7 @@ def AI_phase0(field,size,ownChar):
 		enemyChar = 'O'
 	elif ownChar == 'O':
 		enemyChar = 'X'
+
 	if getFieldStatus(field,size) == 0:
 		result[int(size/2)][int(size/2)] = ownChar
 		return result
@@ -297,20 +300,24 @@ def AI_phase3(field,size,ownChar):
 
 
 def AI(field,size,ownChar):
-	result = field
 	# Phase 0
-	if AI_phase0(field,size,ownChar) != []:
-		return AI_phase0(field,size,ownChar)
+	result = AI_phase0(field,size,ownChar)
+	if result != []:
+		return result
 	# Phase 1
-	if victory(field,size,ownChar) != []:
+	result = victory(field,size,ownChar)
+	if result != []:
 		return victory(field,size,ownChar)
 	# Phase 2
-	if danger(field,size,ownChar) != []:
+	result = danger(field,size,ownChar)
+	if result != []:
 		return danger(field,size,ownChar)
 	# Phase 3
-	if AI_phase3(field,size,ownChar) != []:
+	result = AI_phase3(field,size,ownChar) 
+	if result != []:
 		return AI_phase3(field,size,ownChar)
 	# Phase 4
+		result = field
 	while True:
 		r = random.randint(0,size-1)
 		c = random.randint(0,size-1)
@@ -437,6 +444,7 @@ def Round(field,size,player1,player2):
 		return player2Name
 	else:
 		return field
+
 
 def game(function1,function2,size,score1,score2):
 	field = createNewField(size)
