@@ -10,6 +10,7 @@ import sys
 # invincible AI
 # nicer output
 # nicer input
+# fix the semantic bugs!!!
 
 
 def dbg(toPrint):
@@ -22,7 +23,7 @@ def setPlayer(function):
 	playerFunction = function
 	playerName = raw_input('Please input the name of the player: ')
 	playerChar = raw_input('Please input the char of the player: ')
-	result = [playerFunction,playerName,playerChar]
+	result = [playerFunction,playerName,playerChar,0]
 	return result
 
 
@@ -147,6 +148,7 @@ def victory(field,size,ownChar):
 	fullLine = []
 	for i in range(size):
 		fullLine.append(ownChar)	
+	
 	result = field
 
 	charCounter = 0	
@@ -155,8 +157,10 @@ def victory(field,size,ownChar):
 			if field[i][i2] == ownChar:
 				charCounter += 1
 		if charCounter == (size-1):
-			result[i] = fullLine
-			return result
+			for i3 in range(size):
+				if field[i][i3] == ' ':
+					result[i][i3] = ownChar
+					return result
 	
 	charCounter = 0
 	columns = getCOL(field,size)
@@ -165,9 +169,11 @@ def victory(field,size,ownChar):
 			if columns[i][i2] == ownChar:
 				charCounter += 1
 		if charCounter == (size-1):
-			columns[i] = fullLine
-			result = getCOL(columns,size)
-			return result
+			for i3 in range(size):				
+				if columns[i][i3] == ' ':				
+					columns[i][i3] = ownChar
+					result = getCOL(columns,size)
+					return result
 	
 	dia1 = getDIA(field,size)[0]
 	dia2 = getDIA(field,size)[1]
@@ -193,7 +199,7 @@ def victory(field,size,ownChar):
 
 
 def Winner(field,size,player1Char,player2Char):
-	winner = ''
+	winner = ' '
 	player1Streak = []
 	player2Streak = []
 	for i in range(size):
@@ -208,7 +214,7 @@ def Winner(field,size,player1Char,player2Char):
 			winner = player2Char
 			return winner
 		else:
-			winner = ''
+			winner = ' '
 	
 	columns = getCOL(field,size)
 
@@ -220,7 +226,7 @@ def Winner(field,size,player1Char,player2Char):
 			winner = player2Char
 			return winner
 		else:
-			winner = ''
+			winner = ' '
 	dia1 = getDIA(field,size)[0]
 	dia2 = getDIA(field,size)[1]
 
@@ -231,11 +237,12 @@ def Winner(field,size,player1Char,player2Char):
 		winner = player1Char
 		return winner
 	else:
-		winner = ''
+		winner = ' '
 
 	fieldStatus = getFieldStatus(field,size)
 	if fieldStatus == 9:
 		return "Nobody"
+
 	return winner
 
 
@@ -307,7 +314,7 @@ def AI(field,size,ownChar):
 	# Phase 1
 	result = victory(field,size,ownChar)
 	if result != []:
-		return victory(field,size,ownChar)
+		return result
 	# Phase 2
 	result = danger(field,size,ownChar)
 	if result != []:
@@ -411,64 +418,103 @@ def cheater_AI(field,size,ownChar):
 	return result
 
 
+# player = [function,name,char,score]
+
 def Round(field,size,player1,player2):
-	'''	
-	player1 = [player1Function,player1Name,player1Char]
-	player2 = [player2Function,player2Name,player2Char]
-	Example:
-	player1 = [user,'User','X']
-	'''
+
 	player1Function = player1[0]
 	player2Function = player2[0]
 	player1Name = player1[1]
 	player2Name = player2[1]
 	player1Char = player1[2]
 	player2Char = player2[2]
+	player1Score = player1[3]
+	player2Score = player2[3]
+
+	victor = Winner(field,size,player1Char,player2Char)
+	if victor == ' ':
+		pass
+	else:
+		if victor == 'Nobody':
+			return 'Nobody'
+		else:
+			return victor
 	
 	field = player1Function(field,size,player1Char)
 	printField(field)
+	
 	victor = Winner(field,size,player1Char,player2Char)
-	if victor == player1Char:
-		return player1Name
-	elif victor == player2Char:
-		return player2Name
-	else:
+	if victor == ' ':
 		pass
-
+	else:
+		if victor == 'Nobody':
+			return 'Nobody'
+		else:
+			return victor
+	
 	field = player2Function(field,size,player2Char)
 	printField(field)
+	
 	victor = Winner(field,size,player1Char,player2Char)
-	if victor == player1Char:
-		return player1Name
-	elif victor == player2Char:
-		return player2Name
+	if victor == ' ':
+		pass
 	else:
-		return field
+		if victor == 'Nobody':
+			return 'Nobody'
+		else:
+			return victor
+	
+	return field
 
 
-def game(function1,function2,size,score1,score2):
+def Game(size,player1,player2):
 	field = createNewField(size)
-	player1 = setPlayer(function1)
-	player2 = setPlayer(function2)
-	while field != player1[1] and field != player2[1]:
-		field = Round(field,size,player1,player2)
-		if field == player1[1]:
-			return [score1+1,score2]		
-		elif field == player2[1]:
-			return [score1,score2+1]
+	result = []
+	while type(result) != type(''):
 
+		result = Round(field,size,player1,player2)
+		# print repr(result)
+		if result == 'Nobody':
+			print 'Nobody wins'
+			return [player1,player2]
+		elif result == player1[2]:
+			print str(player1[1]) + ' wins'
+			player1[3] += 1
+			return [player1,player2]
+		elif result == player2[2]:
+			print str(player2[1]) + ' wins'
+			player2[3] += 1
+			return [player1,player2]
 
+	if result == 'Nobody':
+		print 'Nobody wins'
+		return [player1,player2]
+	elif result == player1[2]:
+		print str(player1[1]) + ' wins'
+		player1[3] += 1
+		return [player1,player2]
+	elif result == player2[2]:
+		print str(player2[1]) + ' wins'
+		player2[3] += 1
+		return [player1,player2]	
+
+size = 3
 function1 = user
 function2 = AI
-size = 5
 
+rounds = 100
+
+player1 = setPlayer(function1)
+player2 = setPlayer(function2)
+
+result = [player1,player2]
 
 counter = 0
-score1 = 0
-score2 = 0
-while counter != 100:
-	result = game(function1,function2,size,score1,score2)
-	score1 = result[0]
-	score2 = result[1]
-print "Player 1: " + str(score1)
-print "Player 2: " + str(score2)
+while counter != rounds:
+	result = Game(size,result[0],result[1])
+
+player1 = result[0]
+player2 = result[1]
+
+print str(player1[1]) + ' score: ' + str(player1[3])
+print str(player2[1]) + ' score: ' + str(player2[3])
