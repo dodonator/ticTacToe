@@ -61,6 +61,18 @@ def printField2(field,size):
 		print element
 				
 
+def printFieldM(field):
+	size = len(field)
+	man = []
+	for r in range(size):
+		man.append([])
+	for r in range(size):
+		for c in range(size):
+			man[r].append(str(str(r)+'|'+str(c)))
+	for i in range(size):
+		print str(field[i]) + '    ' + str(man[i])
+
+
 def getDIA(field,size):
 	dia1 = []
 	dia2 = []
@@ -336,7 +348,7 @@ def AI(field,size,ownChar):
 def user(field,size,ownChar):
 	result = field
 	while True:
-		printField(field)
+		printFieldM(field)
 		row = int(raw_input('Which row (0-'+str(size-1)+'): '))
 		column = int(raw_input('Which column (0-'+str(size-1)+'): '))
 		if field[row][column] == ' ':
