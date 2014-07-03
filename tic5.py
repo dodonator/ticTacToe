@@ -1,5 +1,6 @@
 # Warning: Just in developing
-# Theoretical this version supports all sizes of fields with the condition that size%2 = 1
+# Theoretical this version supports all sizes of fields
+# with the condition that size%2 = 1
 import random
 import os
 import copy
@@ -18,7 +19,8 @@ def call_log(f):
     def aux(*args, **kwargs):
         print("called {} with {}, {}".format(f.__name__, args, kwargs))
         retval = f(*args, **kwargs)
-        print("returned {} (input values are {}, {})".format(retval, args, kwargs))
+        p = ("returned {} (input values are {}, {})")
+        print p.format(retval, args, kwargs)
         return retval
 
     return aux
@@ -73,7 +75,6 @@ def printField2(field, size):
     for i in range(size):
         result.append([])
     for i in range(size):
-        row = field[i]
         for i2 in range(size):
             if field[i][i2] == ' ':
                 result[i].append(str(k+i2))
@@ -406,7 +407,8 @@ def cheater_shuffle(field, size, ownChar):
     return result
 
 
-def cheater_shuffle_na(field, size, ownChar):  # na means that this function don't add a figure
+def cheater_shuffle_na(field, size, ownChar):
+    # na means that this function don't add a figure
     result = field
     if ownChar == 'X':
         enemyChar = 'O'
@@ -424,7 +426,8 @@ def cheater_shuffle_na(field, size, ownChar):  # na means that this function don
     return result
 
 
-def cheater_invert_na(field, size, ownChar):  # na means that this function don't add a figure
+def cheater_invert_na(field, size, ownChar):
+    # na means that this function don't add a figure
     result = field
     if ownChar == 'X':
         enemyChar = 'O'
@@ -439,7 +442,8 @@ def cheater_invert_na(field, size, ownChar):  # na means that this function don'
     return result
 
 
-def cheater_swap_na(field, size, ownChar):  # na means that this function don't add a figure
+def cheater_swap_na(field, size, ownChar):
+    # na means that this function don't add a figure
     result = field
     r1 = random.randint(0, size-1)
     c1 = random.randint(0, size-1)
@@ -463,12 +467,8 @@ def Round(field, size, player1, player2):
 
     player1Function = player1[0]
     player2Function = player2[0]
-    player1Name = player1[1]
-    player2Name = player2[1]
     player1Char = player1[2]
     player2Char = player2[2]
-    player1Score = player1[3]
-    player2Score = player2[3]
 
     victor = Winner(field, size, player1Char, player2Char)
     if victor == ' ':
@@ -510,7 +510,7 @@ def Round(field, size, player1, player2):
 def Game(size, player1, player2):
     field = createNewField(size)
     result = []
-    while type(result) != type(''):
+    while result(isinstance) != isinstance(''):
 
         result = Round(field, size, player1, player2)
         # print repr(result)
