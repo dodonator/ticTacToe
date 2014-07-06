@@ -6,7 +6,6 @@ import os
 import copy
 
 # TODO:
-# game-function to play the Round() function
 # more cheater
 # invincible AI
 # nicer output
@@ -29,6 +28,9 @@ def call_log(f):
 def dbg(toPrint):
     print repr(toPrint)
     return
+
+
+# Game related stuff!
 
 
 def setPlayer(function):
@@ -95,6 +97,23 @@ def printFieldM(field):
             man[r].append(str(str(r)+'|'+str(c)))
     for i in range(size):
         print str(field[i]) + '    ' + str(man[i])
+
+
+def printScore(score,size):
+    for i in range(size):
+        for i2 in range(size):
+            print score[i*size+i2],
+        print ''
+
+
+def conScore(score,size):
+    result = []    
+    for i in range(size):
+        result.append([0,0,0])
+    for i in range(size):
+        for i2 in range(size):
+            result[i][i2] = score[i*size+i2]
+    return result
 
 
 def getDIA(field, size):
@@ -282,7 +301,7 @@ def Winner(field, size, player1Char, player2Char):
     return winner
 
 
-@call_log
+# @call_log
 def AI_phase0(field, size, ownChar):
     result = field
     if ownChar == 'X':
@@ -308,7 +327,7 @@ def AI_phase0(field, size, ownChar):
     return []
 
 
-@call_log
+# @call_log
 def AI_phase3(field, size, ownChar):
     if ownChar == 'X':
         enemyChar = 'O'
@@ -344,6 +363,60 @@ def AI_phase3(field, size, ownChar):
     return result
 
 
+def AI_Score(field,size,ownChar,enemyChar):
+    score = [0,0,0,0,0,0,0,0,0]
+    if ownChar == 'X':
+        enemyChar = 'O'
+    elif ownChar == 'O':
+            enemyChar = 'X'    
+
+    for r in range(size):
+        for c in range(size):
+            if field[r][c] == ' ':
+                counter = r*size + c
+                if (ownChar in field[r] and enemyChar not in field[r]):
+                    score[counter] += 1
+                elif (ownChar not in field[r] and enemyChar not in field[r]):
+                    score[counter] += 1
+
+    columns = getCOL(field,size)
+    for c in range(size):
+        for r in range(size):
+            if columns[c][r] == ' ':            
+                counter = c*size + r
+                col = columns[r]
+                if (ownChar in col and enemyChar not in col):
+                    score[counter] += 1
+                elif (ownChar not in col and enemyChar not in col):
+                    score[counter] += 1
+    
+    dia = getDIA(field,size)
+    dia1 = dia[0]
+    dia2 = dia[1]
+    
+    for i in range(size):
+        if dia1[i] == ' ':
+            counter = i*size + i
+            if field[i][i] == ' ':
+                if (ownChar in dia1 and enemyChar not in dia1):
+                    score[counter] += 1
+                elif (ownChar not in dia1 and enemyChar not in dia1):
+                    score[counter] += 1
+    
+    for i in range(size):
+        if dia2[i] == ' ':
+            r = i
+            c = size-(i+1)            
+            counter = r*size + c
+            if field[r][c] == ' ':
+                if (ownChar in dia2 and enemyChar not in dia2):
+                    score[counter] += 1
+                elif (ownChar not in dia2 and enemyChar not in dia2):
+                    score[counter] += 1
+    
+    return score
+
+
 def AI(field, size, ownChar):
     # Phase 0
     result = AI_phase0(field, size, ownChar)
@@ -362,15 +435,47 @@ def AI(field, size, ownChar):
     if result != []:
         return result
     # Phase 4
-    result = field
+    result = copy.deepcopy(field)
 
-    print("entering something")
     while True:
         r = random.randint(0, size-1)
         c = random.randint(0, size-1)
         if field[r][c] == ' ':
             result[r][c] = ownChar
             return result
+
+
+def inv(field, size, ownChar):
+    result = copy.deepcopy(field)
+    if ownChar == 'X':
+        enemyChar = 'O'
+
+    elif ownChar == 'O':
+        enemyChar = 'X'
+
+    score = AI_Score(field,size,ownChar,enemyChar)
+    score2 = AI_Score(field,size,enemyChar,ownChar)
+    
+    for i in range(len(score)):
+        score[i] = score[i] + score2[i]
+
+    m = max(score)
+    for r in range(size):
+        for c in range(size):
+            counter = r*size + c
+            if score[counter] == m:
+                result[r][c] = ownChar
+                return result    
+    
+
+def randomAI(field,size,ownChar):
+    while True:
+        r = random.randint(0,size-1)
+        c = random.randint(0,size-1)
+        print r,c        
+        if field[r][c] == ' ':
+            field[r][c] = ownChar
+            return field
 
 
 def user(field, size, ownChar):
@@ -503,14 +608,13 @@ def Round(field, size, player1, player2):
         else:
             return victor
 
-    print "returning field"
     return field
 
 
 def Game(size, player1, player2):
     field = createNewField(size)
     result = []
-    while result(isinstance) != isinstance(''):
+    while type(result) != type(''):
 
         result = Round(field, size, player1, player2)
         # print repr(result)
@@ -541,10 +645,14 @@ def Game(size, player1, player2):
         return [player1, player2]
 
 size = 3
+
+# Possible fuctions:
+# user ; randomAI ; AI ; inv ; cheater_shuffle ; cheater_shuffle
+# cheater_invert_na ; cheater_swap_na ; cheater_AI
 function1 = user
 function2 = AI
 
-rounds = 100
+rounds = 10
 
 player1 = setPlayer(function1)
 player2 = setPlayer(function2)
@@ -554,6 +662,7 @@ result = [player1, player2]
 counter = 0
 while counter != rounds:
     result = Game(size, result[0], result[1])
+    counter += 1
 
 player1 = result[0]
 player2 = result[1]
