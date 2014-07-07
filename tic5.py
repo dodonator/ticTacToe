@@ -12,6 +12,7 @@ import copy
 # nicer input
 # fix the semantic bugs!!!
 # a user function with a manual
+# fix the printField function
 
 
 def call_log(f):
@@ -100,17 +101,17 @@ def printFieldM(field):
         print str(field[i]) + '    ' + str(man[i])
 
 
-def printScore(score,size):
+def printScore(score, size):
     for i in range(size):
         for i2 in range(size):
             print score[i*size+i2],
         print ''
 
 
-def conScore(score,size):
+def conScore(score, size):
     result = []    
     for i in range(size):
-        result.append([0,0,0])
+        result.append([0, 0, 0])
     for i in range(size):
         for i2 in range(size):
             result[i][i2] = score[i*size+i2]
@@ -364,8 +365,8 @@ def AI_phase3(field, size, ownChar):
     return result
 
 
-def AI_Score(field,size,ownChar,enemyChar):
-    score = [0,0,0,0,0,0,0,0,0]
+def AI_Score(field, size, ownChar, enemyChar):
+    score = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     for r in range(size):
         for c in range(size):
@@ -376,7 +377,7 @@ def AI_Score(field,size,ownChar,enemyChar):
                 elif (ownChar not in field[r] and enemyChar not in field[r]):
                     score[counter] += 1
 
-    columns = getCOL(field,size)
+    columns = getCOL(field, size)
     for c in range(size):
         for r in range(size):
             if columns[c][r] == ' ':            
@@ -386,11 +387,11 @@ def AI_Score(field,size,ownChar,enemyChar):
                     score[counter] += 1
                 elif (ownChar not in col and enemyChar not in col):
                     score[counter] += 1
-    
-    dia = getDIA(field,size)
+
+    dia = getDIA(field, size)
     dia1 = dia[0]
     dia2 = dia[1]
-    
+
     for i in range(size):
         if dia1[i] == ' ':
             counter = i*size + i
@@ -399,7 +400,7 @@ def AI_Score(field,size,ownChar,enemyChar):
                     score[counter] += 1
                 elif (ownChar not in dia1 and enemyChar not in dia1):
                     score[counter] += 1
-    
+
     for i in range(size):
         if dia2[i] == ' ':
             r = i
@@ -410,7 +411,7 @@ def AI_Score(field,size,ownChar,enemyChar):
                     score[counter] += 1
                 elif (ownChar not in dia2 and enemyChar not in dia2):
                     score[counter] += 1
-    
+
     return score
 
 
@@ -450,9 +451,9 @@ def inv(field, size, ownChar):
     elif ownChar == 'O':
         enemyChar = 'X'
 
-    score = AI_Score(field,size,ownChar,enemyChar)
-    score2 = AI_Score(field,size,enemyChar,ownChar)
-    
+    score = AI_Score(field, size, ownChar, enemyChar)
+    score2 = AI_Score(field, size, enemyChar, ownChar)
+
     for i in range(len(score)):
         score[i] = score[i] + score2[i]
 
@@ -463,12 +464,12 @@ def inv(field, size, ownChar):
             if score[counter] == m:
                 result[r][c] = ownChar
                 return result    
-    
 
-def randomAI(field,size,ownChar):
+
+def randomAI(field, size, ownChar):
     while True:
-        r = random.randint(0,size-1)
-        c = random.randint(0,size-1)      
+        r = random.randint(0, size-1)
+        c = random.randint(0, size-1)      
         if field[r][c] == ' ':
             field[r][c] = ownChar
             return field
@@ -487,7 +488,7 @@ def user(field, size, ownChar):
             os.system('clear')
 
 
-def user_new(field,size,ownChar):
+def user_new(field, size, ownChar):
     result = copy.deepcopy(field)    
     if ownChar == 'X':
         enemyChar = 'O'
@@ -497,12 +498,12 @@ def user_new(field,size,ownChar):
     score2 = AI_Score(field, size, enemyChar, ownChar)
     for i in range(size*size):
         score1[i] = score1[i] + score2[i]
-    score = conScore(score1,size)
+    score = conScore(score1, size)
     while True:
         for i in range(size):
             print str(field[i]) + '    ' + str(score[i])
-        row = int(raw_input('Which row (0-'+str(size-1)+'): '))
-        column = int(raw_input('Which column (0-'+str(size-1)+'): '))
+        row = int(raw_input('Which row (0-' + str(size-1) + '): '))
+        column = int(raw_input('Which column (0-' + str(size-1) + '): '))
         if field[row][column] == ' ':
             result[row][column] = ownChar
             return result
