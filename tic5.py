@@ -11,6 +11,7 @@ import copy
 # nicer output
 # nicer input
 # fix the semantic bugs!!!
+# a user function with a manual
 
 
 def call_log(f):
@@ -365,10 +366,6 @@ def AI_phase3(field, size, ownChar):
 
 def AI_Score(field,size,ownChar,enemyChar):
     score = [0,0,0,0,0,0,0,0,0]
-    if ownChar == 'X':
-        enemyChar = 'O'
-    elif ownChar == 'O':
-            enemyChar = 'X'    
 
     for r in range(size):
         for c in range(size):
@@ -471,8 +468,7 @@ def inv(field, size, ownChar):
 def randomAI(field,size,ownChar):
     while True:
         r = random.randint(0,size-1)
-        c = random.randint(0,size-1)
-        print r,c        
+        c = random.randint(0,size-1)      
         if field[r][c] == ' ':
             field[r][c] = ownChar
             return field
@@ -482,6 +478,29 @@ def user(field, size, ownChar):
     result = field
     while True:
         printField(field)
+        row = int(raw_input('Which row (0-'+str(size-1)+'): '))
+        column = int(raw_input('Which column (0-'+str(size-1)+'): '))
+        if field[row][column] == ' ':
+            result[row][column] = ownChar
+            return result
+        else:
+            os.system('clear')
+
+
+def user_new(field,size,ownChar):
+    result = copy.deepcopy(field)    
+    if ownChar == 'X':
+        enemyChar = 'O'
+    elif ownChar == 'O':
+        enemyChar = 'X'
+    score1 = AI_Score(field, size, ownChar, enemyChar)
+    score2 = AI_Score(field, size, enemyChar, ownChar)
+    for i in range(size*size):
+        score1[i] = score1[i] + score2[i]
+    score = conScore(score1,size)
+    while True:
+        for i in range(size):
+            print str(field[i]) + '    ' + str(score[i])
         row = int(raw_input('Which row (0-'+str(size-1)+'): '))
         column = int(raw_input('Which column (0-'+str(size-1)+'): '))
         if field[row][column] == ' ':
@@ -648,11 +667,11 @@ size = 3
 
 # Possible fuctions:
 # user ; randomAI ; AI ; inv ; cheater_shuffle ; cheater_shuffle
-# cheater_invert_na ; cheater_swap_na ; cheater_AI
+# cheater_invert_na ; cheater_swap_na ; cheater_AI ; user_new
 function1 = user
-function2 = AI
+function2 = inv
 
-rounds = 10
+rounds = 1000
 
 player1 = setPlayer(function1)
 player2 = setPlayer(function2)
@@ -667,5 +686,7 @@ while counter != rounds:
 player1 = result[0]
 player2 = result[1]
 
+os.system('clear')
 print str(player1[1]) + ' score: ' + str(player1[3])
 print str(player2[1]) + ' score: ' + str(player2[3])
+print 'draws: ' + str(rounds-player1[3]+player2[3])
